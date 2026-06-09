@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adnovative OS · Sistema operativo del equipo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A1322;--bg2:#101D33;--bg3:#16263F;--bg4:#1C2E48;
+  --cream:#E9F0FA;--muted:#92A6C4;--faint:#57708F;
+  --accent:#3D6FE5;--accent2:#82A6F2;--cyan:#5FB4D6;
+  --growth:#3D6FE5;--account:#E0A75C;--ops:#46AEDC;--direccion:#A89CFF;--soporte:#7E92B0;
+  --ok:#3FB58E;--warn:#E0A75C;--hi:#E2685A;
+  --line:rgba(233,240,250,.12);--line2:rgba(233,240,250,.06);
+  --serif:'Fraunces',serif;--sans:'Hanken Grotesk',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--cream);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
+.glow{position:fixed;border-radius:50%;filter:blur(120px);opacity:.25;z-index:0;pointer-events:none}
+.glow.a{width:46vw;height:46vw;background:#1B3A6B;top:-12vw;right:-8vw}
+.glow.b{width:38vw;height:38vw;background:#21304D;bottom:-12vw;left:-6vw}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.app{position:relative;z-index:2;max-width:1320px;margin:0 auto;padding:0 30px}
+
+/* ==== LOGIN ==== */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:60px 20px;animation:fadeUp .6s ease forwards}
+.login-card{background:var(--bg2);border:1px solid var(--line);border-radius:20px;padding:48px 44px;max-width:520px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.login-card .kicker{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--accent2);font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.login-card .kicker .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2.4s infinite}
+.login-card h2{font-family:var(--serif);font-weight:300;font-size:38px;line-height:1.05;letter-spacing:-.02em;margin-bottom:14px}
+.login-card h2 .it{font-style:italic;color:var(--accent)}
+.login-card p{font-size:14px;color:var(--muted);margin-bottom:30px;line-height:1.55}
+.gbtn{display:flex;width:100%;align-items:center;justify-content:center;gap:12px;padding:14px 22px;border-radius:12px;background:#fff;color:#222;font-family:var(--sans);font-size:15px;font-weight:600;border:none;cursor:pointer;transition:all .2s}
+.gbtn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.gbtn svg{width:20px;height:20px}
+.login-foot{font-size:11px;color:var(--faint);text-align:center;margin-top:28px;font-style:italic;line-height:1.5}
+.login-foot b{color:var(--muted);font-weight:500}
+
+/* ==== DASHBOARD ==== */
+.topbar{position:sticky;top:0;z-index:30;background:rgba(10,19,34,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:14px 0;margin-bottom:40px}
+.topbar-inner{max-width:1320px;margin:0 auto;padding:0 30px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:14px}
+.brand .logo{font-family:var(--serif);font-weight:400;font-size:20px}
+.brand .logo .it{font-style:italic;color:var(--accent)}
+.brand .live{width:8px;height:8px;border-radius:50%;background:var(--ok);animation:pulse 2.4s infinite}
+.who{display:flex;align-items:center;gap:10px;font-size:13px}
+.who .av{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:600;background:var(--accent)}
+.who-info{line-height:1.2}
+.who-name{font-weight:600}
+.who-role{font-size:11px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.signout{font-size:12px;color:var(--faint);text-decoration:none;padding:6px 12px;border-radius:8px;cursor:pointer;background:none;border:1px solid transparent}
+.signout:hover{color:var(--cream);background:var(--bg3)}
+
+.dashboard{padding-bottom:80px;animation:fadeUp .5s ease forwards}
+.greeting{margin-bottom:34px}
+.greeting .hi{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent2);margin-bottom:10px;font-weight:600}
+.greeting h2{font-family:var(--serif);font-weight:300;font-size:clamp(34px,5vw,52px);line-height:1.05;letter-spacing:-.02em}
+.greeting h2 .it{font-style:italic;color:var(--accent)}
+
+.sectitle{display:flex;align-items:center;gap:12px;margin:36px 0 16px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.sectitle::before{content:"";width:30px;height:1px;background:var(--accent)}
+.sectitle .ln{flex:1;height:1px;background:var(--line);margin-left:8px}
+.sectitle .pill{background:var(--bg3);color:var(--muted);font-size:10.5px;padding:3px 11px;border-radius:20px;letter-spacing:.02em;text-transform:none}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}}
+.stat{background:var(--bg2);border:1px solid var(--line);border-radius:13px;padding:18px}
+.stat .v{font-family:var(--serif);font-weight:300;font-size:32px;line-height:1}
+.stat .v .u{color:var(--accent);font-size:.55em;margin-left:4px}
+.stat .l{font-size:11.5px;color:var(--muted);margin-top:8px}
+
+.pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+@media(max-width:1000px){.pipeline{grid-template-columns:1fr}}
+.col{background:var(--bg2);border:1px solid var(--line);border-radius:13px;padding:12px;min-height:120px}
+.col h4{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.col h4 .dot{width:8px;height:8px;border-radius:50%}
+.col h4 .cnt{margin-left:auto;font-size:10px;color:var(--faint);background:var(--bg);padding:2px 7px;border-radius:20px}
+.card{background:var(--bg3);border:1px solid var(--line);border-radius:11px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .15s;border-left:3px solid var(--accent)}
+.card:hover{transform:translateY(-1px);border-color:var(--accent)}
+.card h5{font-size:13px;font-weight:600;line-height:1.2;margin-bottom:4px;color:var(--cream)}
+.card .ag{font-size:10px;color:var(--accent2);font-style:italic;margin-bottom:6px}
+.card .ag::before{content:"vía "}
+.card .pj{font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.3}
+.card .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tag{font-size:9.5px;padding:2px 7px;border-radius:20px;background:var(--bg4);color:var(--accent2);font-weight:500;letter-spacing:.04em}
+.tag.days{background:transparent;color:var(--faint);padding:2px 0}
+.empty{color:var(--faint);font-size:11px;font-style:italic;text-align:center;padding:20px 0}
+
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;font-family:var(--sans);font-size:14px;font-weight:500;border:1px solid var(--line);background:var(--bg2);color:var(--cream);cursor:pointer;text-decoration:none;transition:all .2s}
+.btn:hover{border-color:var(--accent);background:var(--bg3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:#4C7DF0}
+.btn.sm{padding:8px 14px;font-size:12.5px}
+.btn.ghost{background:transparent}
+
+/* ==== MODAL ==== */
+.ov{position:fixed;inset:0;background:rgba(5,9,17,.72);backdrop-filter:blur(3px);z-index:50;display:none;align-items:flex-start;justify-content:center;padding:36px 18px;overflow-y:auto}
+.ov.on{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--line);border-radius:18px;width:100%;max-width:660px;padding:28px}
+.modal .mhd{margin-bottom:20px}
+.modal h2{font-family:var(--serif);font-weight:400;font-size:24px;line-height:1.1}
+.modal .msub{font-size:13px;color:var(--muted);margin-top:4px}
+.fld{margin-bottom:13px}
+.fld label{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:5px;font-weight:500}
+.fld input,.fld select,.fld textarea{width:100%;padding:10px 13px;border-radius:9px;border:1px solid var(--line);background:var(--bg3);color:var(--cream);font-family:var(--sans);font-size:14px}
+.fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:var(--accent)}
+.fld textarea{resize:vertical;min-height:60px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.mbtns{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.mbtns .del{margin-left:auto;border-color:rgba(226,75,75,.4);color:#E88}
+.mbtns .del:hover{background:rgba(226,75,75,.12)}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--accent);color:#fff;padding:13px 24px;border-radius:30px;font-size:14px;font-weight:500;z-index:99;transition:transform .3s;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+.alert{background:rgba(224,167,92,.1);border:1px solid rgba(224,167,92,.4);color:var(--cream);padding:14px 18px;border-radius:11px;font-size:13px;margin-bottom:20px;line-height:1.55}
+.alert b{color:var(--warn)}
+
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+<div class="glow a"></div>
+<div class="glow b"></div>
+
+<!-- ==== LOGIN ==== -->
+<div id="loginView">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="kicker"><span class="dot"></span>Sistema operativo · acceso</div>
+      <h2>Adnovative <span class="it">OS.</span></h2>
+      <p>Inicia sesión con tu cuenta de Google <b style="color:var(--cream)">@adnovative.com</b>. Tu rol se asigna automáticamente.</p>
+
+      <button class="gbtn" onclick="signInWithGoogle()">
+        <svg viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Continuar con Google
+      </button>
+
+      <div class="login-foot">
+        <b>Sistema compartido en tiempo real.</b><br>
+        Lo que crea uno, lo ven todos al instante.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==== DASHBOARD ==== -->
+<div id="appView" class="hidden">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="live"></span>
+        <span class="logo">Adnovative <span class="it">OS</span></span>
+      </div>
+      <div class="who">
+        <span class="av" id="userAv"></span>
+        <span class="who-info">
+          <span class="who-name" id="userName"></span>
+          <span class="who-role" id="userRole"></span>
+        </span>
+        <button class="signout" onclick="signOut()">Salir</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="app dashboard">
+    <div class="greeting">
+      <div class="hi" id="hiText"></div>
+      <h2 id="greetingText"></h2>
+    </div>
+
+    <div class="sectitle"><span>Resumen del equipo</span><span class="ln"></span><span class="pill" id="livePill">🟢 en vivo</span></div>
+    <div class="stats" id="statsBlock"></div>
+
+    <div class="sectitle"><span>Pipeline · todas las áreas</span><span class="ln"></span></div>
+    <div class="toolbar">
+      <button class="btn primary" onclick="openNewOpp()">+ Nueva oportunidad</button>
+      <button class="btn ghost sm" onclick="loadAll()">↻ Refrescar</button>
+    </div>
+    <div class="pipeline" id="pipelineBlock"></div>
+  </div>
+</div>
+
+<div class="ov" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modalBox"></div></div>
+<div class="toast" id="toast"></div>
+
+<!-- Supabase JS client (CDN) -->
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<!-- Config con las claves Supabase (otra pestaña) -->
+<script src="config.js"></script>
+<script>
+// ============================================================
+// SUPABASE INIT
+// ============================================================
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Estado local
+let CURRENT_USER = null;
+let CURRENT_PROFILE = null;
+let DATA = []; // oportunidades
+let CLIENTS = [];
+let AGENCIES = [];
+
+const STATES = [
+  {k:1, name:"Brief", color:"#8294B0", area:"Growth"},
+  {k:2, name:"RFP", color:"#3D6FE5", area:"Growth"},
+  {k:3, name:"Propuesta", color:"#5FB4D6", area:"Growth"},
+  {k:4, name:"Account", color:"#E0A75C", area:"Account"},
+  {k:5, name:"Operaciones", color:"#46AEDC", area:"Operaciones"},
+];
+const ROLE_LABEL={direccion:"Dirección",growth:"Growth",account:"Account",ops:"Operaciones",soporte:"Soporte"};
+const ROLE_COLOR={direccion:"#A89CFF",growth:"#3D6FE5",account:"#E0A75C",ops:"#46AEDC",soporte:"#7E92B0"};
+
+// ============================================================
+// AUTH
+// ============================================================
+async function signInWithGoogle(){
+  const { error } = await supa.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin }
+  });
+  if(error) toast("Error al iniciar sesión: " + error.message);
+}
+
+async function signOut(){
+  await supa.auth.signOut();
+  window.location.reload();
+}
+
+async function checkAuth(){
+  const { data: { user } } = await supa.auth.getUser();
+  if(!user){
+    document.getElementById('loginView').classList.remove('hidden');
+    document.getElementById('appView').classList.add('hidden');
+    return;
+  }
+  CURRENT_USER = user;
+  // Cargar el perfil de la BD
+  const { data: profile, error } = await supa.from('profiles').select('*').eq('id', user.id).single();
+  if(error || !profile){
+    toast("Tu cuenta no tiene perfil activo. Contacta a Ari.");
+    return;
+  }
+  CURRENT_PROFILE = profile;
+  document.getElementById('loginView').classList.add('hidden');
+  document.getElementById('appView').classList.remove('hidden');
+  renderTopbar();
+  await loadAll();
+  // Suscripción realtime
+  subscribeRealtime();
+}
+
+function renderTopbar(){
+  const u = CURRENT_PROFILE;
+  document.getElementById('userAv').textContent = (u.name||u.email||'?').split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
+  document.getElementById('userAv').style.background = ROLE_COLOR[u.role] || '#3D6FE5';
+  document.getElementById('userName').textContent = u.name || u.email;
+  document.getElementById('userRole').textContent = `${ROLE_LABEL[u.role]||u.role} · ${u.title||''}`;
+  document.getElementById('userRole').style.color = ROLE_COLOR[u.role];
+
+  const firstName = (u.name||u.email||'').split(' ')[0];
+  document.getElementById('hiText').textContent = `Hola ${firstName}`;
+  const greetings = {
+    growth: ["Hoy", "tocan oportunidades."],
+    account: ["Hoy", "tocan cierres comerciales."],
+    ops: ["Hoy", "toca activar y optimizar."],
+    direccion: ["Hoy", "tocas tú decidir."],
+    soporte: ["Hoy", "toca mantener el barco a flote."],
+  };
+  const g = greetings[u.role] || ["Bienvenido", "de vuelta."];
+  document.getElementById('greetingText').innerHTML = `${esc(g[0])} <span class="it">${esc(g[1])}</span>`;
+}
+
+// ============================================================
+// DATA LOADING
+// ============================================================
+async function loadAll(){
+  const [oppsRes, clientsRes, agenciesRes] = await Promise.all([
+    supa.from('opportunities').select('*, clients(name), agencies(name)').order('created_at', { ascending: false }),
+    supa.from('clients').select('*').order('name'),
+    supa.from('agencies').select('*').order('name'),
+  ]);
+  DATA = oppsRes.data || [];
+  CLIENTS = clientsRes.data || [];
+  AGENCIES = agenciesRes.data || [];
+  renderStats();
+  renderPipeline();
+}
+
+function subscribeRealtime(){
+  // Actualizaciones en vivo de oportunidades
+  supa.channel('opportunities-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'opportunities' }, payload => {
+      // recargar al cambiar algo
+      loadAll();
+      document.getElementById('livePill').textContent = '🟢 actualizado';
+      setTimeout(()=>{ document.getElementById('livePill').textContent = '🟢 en vivo'; }, 2000);
+    })
+    .subscribe();
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderStats(){
+  const total = DATA.length;
+  const inGrowth = DATA.filter(d=>d.status<=3).length;
+  const inAccount = DATA.filter(d=>d.status===4).length;
+  const inOps = DATA.filter(d=>d.status===5).length;
+  const cerradas = DATA.filter(d=>d.status===6).length;
+  const pipelineEur = DATA.filter(d=>d.status<6).reduce((s,d)=>s+(parseInt(d.budget)||0),0);
+  const fmtK = n => n>=1000 ? Math.round(n/1000)+'K' : String(n);
+  const stats = [
+    {v: total, l: "oportunidades totales"},
+    {v: inGrowth, l: "en Growth"},
+    {v: inAccount, l: "en Account"},
+    {v: fmtK(pipelineEur), l: "€ pipeline activo", u: ""},
+  ];
+  document.getElementById('statsBlock').innerHTML = stats.map(s =>
+    `<div class="stat"><div class="v">${esc(s.v)}${s.u!==undefined?'<span class="u">'+esc(s.u)+'</span>':''}</div><div class="l">${esc(s.l)}</div></div>`
+  ).join('');
+}
+
+function renderPipeline(){
+  document.getElementById('pipelineBlock').innerHTML = STATES.map(s=>{
+    const items = DATA.filter(d=>d.status===s.k);
+    return `
+      <div class="col">
+        <h4><span class="dot" style="background:${s.color}"></span>${esc(s.name)}<span class="cnt">${items.length}</span></h4>
+        ${items.length ? items.map(d=>opportunityCard(d, s)).join('') : '<div class="empty">—</div>'}
+      </div>`;
+  }).join('');
+}
+
+function opportunityCard(d, s){
+  const clientName = d.clients?.name || '?';
+  const agencyName = d.agencies?.name || '';
+  const days = d.created_at ? Math.floor((Date.now()-new Date(d.created_at))/86400000) : 0;
+  const bud = d.budget ? `<span class="tag">${(+d.budget).toLocaleString('es-ES')} €</span>` : '';
+  const ag = agencyName ? `<div class="ag">${esc(agencyName)}</div>` : '';
+  return `<div class="card" style="border-left-color:${s.color}" onclick="openOpportunity('${d.id}')">
+    <h5>${esc(clientName)}</h5>
+    ${ag}
+    <div class="pj">${esc(d.project_name||'')}</div>
+    <div class="meta">${bud}<span class="tag days">⏱ ${days}d</span></div>
+  </div>`;
+}
+
+// ============================================================
+// CRUD oportunidades
+// ============================================================
+function openNewOpp(){
+  document.getElementById('modalBox').innerHTML = `
+    <div class="mhd"><h2>Nueva oportunidad</h2><div class="msub">Brief recibido · Growth</div></div>
+    <div class="grid2">
+      <div class="fld"><label>Cliente / marca</label><input id="f_client" placeholder="Ej. Subway"></div>
+      <div class="fld"><label>Agencia (opcional)</label><input id="f_agency" placeholder="Ej. Infinity · vacío si directo" list="agency-list">
+        <datalist id="agency-list">${AGENCIES.map(a=>`<option value="${esc(a.name)}"></option>`).join('')}</datalist>
+      </div>
+    </div>
+    <div class="fld"><label>Proyecto / campaña</label><input id="f_project" placeholder="Ej. Lanzamiento menú verano"></div>
+    <div class="grid2">
+      <div class="fld"><label>Presupuesto (€)</label><input id="f_budget" type="number" placeholder="Ej. 55000"></div>
+      <div class="fld"><label>Canales</label><input id="f_channels" placeholder="Programática · CTV"></div>
+    </div>
+    <div class="fld"><label>Notas</label><textarea id="f_notes" placeholder="Cualquier detalle"></textarea></div>
+    <div class="mbtns">
+      <button class="btn primary" onclick="createOpportunity()">Crear oportunidad</button>
+      <button class="btn ghost" onclick="closeModal()">Cancelar</button>
+    </div>`;
+  document.getElementById('ov').classList.add('on');
+}
+
+async function createOpportunity(){
+  const clientName = document.getElementById('f_client').value.trim();
+  const agencyName = document.getElementById('f_agency').value.trim();
+  const projectName = document.getElementById('f_project').value.trim();
+  const budget = parseInt(document.getElementById('f_budget').value)||null;
+  const channels = document.getElementById('f_channels').value.split(/[·,;]/).map(s=>s.trim()).filter(Boolean);
+  const notes = document.getElementById('f_notes').value.trim();
+
+  if(!clientName){ toast("⚠ El cliente es obligatorio"); return; }
+
+  // 1. Cliente: existe o crear
+  let { data: client } = await supa.from('clients').select('id').eq('name', clientName).maybeSingle();
+  if(!client){
+    const insertRes = await supa.from('clients').insert({ name: clientName, created_by: CURRENT_USER.id }).select('id').single();
+    client = insertRes.data;
+  }
+
+  // 2. Agencia (opcional)
+  let agencyId = null;
+  if(agencyName){
+    let { data: agency } = await supa.from('agencies').select('id').eq('name', agencyName).maybeSingle();
+    if(!agency){
+      const insertRes = await supa.from('agencies').insert({ name: agencyName }).select('id').single();
+      agency = insertRes.data;
+    }
+    agencyId = agency?.id;
+  }
+
+  // 3. Oportunidad
+  const { data: opp, error } = await supa.from('opportunities').insert({
+    client_id: client.id,
+    agency_id: agencyId,
+    project_name: projectName || '(sin proyecto)',
+    budget,
+    channels,
+    notes,
+    owner_id: CURRENT_USER.id,
+    status: 1,
+  }).select('id').single();
+
+  if(error){ toast("Error: "+error.message); return; }
+
+  // 4. Event log
+  await supa.from('events').insert({
+    opportunity_id: opp.id, type: 'OPPORTUNITY_CREATED',
+    payload: { client: clientName, agency: agencyName }, user_id: CURRENT_USER.id
+  });
+
+  toast("✓ Oportunidad creada");
+  closeModal();
+  await loadAll();
+}
+
+async function openOpportunity(id){
+  const d = DATA.find(x=>x.id===id);
+  if(!d) return;
+  const s = STATES.find(x=>x.k===d.status);
+  const clientName = d.clients?.name || '?';
+  const agencyName = d.agencies?.name || '';
+
+  document.getElementById('modalBox').innerHTML = `
+    <div class="mhd"><h2>${esc(clientName)}${agencyName?` <span style="font-size:14px;color:var(--accent2);font-style:italic;font-weight:400">· vía ${esc(agencyName)}</span>`:''}</h2>
+      <div class="msub">${esc(d.project_name||'')} · ${esc(s?.name||'?')}</div></div>
+    <div class="grid2">
+      <div class="fld"><label>Presupuesto</label><div style="padding:10px 13px;background:var(--bg3);border-radius:9px;border:1px solid var(--line)">${d.budget ? (+d.budget).toLocaleString('es-ES')+' €' : '—'}</div></div>
+      <div class="fld"><label>Canales</label><div style="padding:10px 13px;background:var(--bg3);border-radius:9px;border:1px solid var(--line)">${(d.channels||[]).join(' · ')||'—'}</div></div>
+    </div>
+    <div class="fld"><label>Fase actual</label><select id="f_status">
+      ${STATES.concat({k:6,name:"Cerrada"}).map(st=>`<option value="${st.k}" ${st.k===d.status?'selected':''}>${st.k} · ${esc(st.name)}</option>`).join('')}
+    </select></div>
+    <div class="fld"><label>Notas</label><textarea id="f_notes">${esc(d.notes||'')}</textarea></div>
+    <div class="mbtns">
+      <button class="btn primary" onclick="saveOpportunity('${d.id}')">Guardar</button>
+      <button class="btn ghost" onclick="closeModal()">Cerrar</button>
+      <button class="btn del" onclick="deleteOpportunity('${d.id}')">Eliminar</button>
+    </div>`;
+  document.getElementById('ov').classList.add('on');
+}
+
+async function saveOpportunity(id){
+  const newStatus = parseInt(document.getElementById('f_status').value);
+  const notes = document.getElementById('f_notes').value.trim();
+  const { error } = await supa.from('opportunities').update({ status: newStatus, notes }).eq('id', id);
+  if(error){ toast("Error: "+error.message); return; }
+  toast("✓ Guardado");
+  closeModal();
+  await loadAll();
+}
+
+async function deleteOpportunity(id){
+  if(!confirm("¿Eliminar esta oportunidad? Esta acción no se puede deshacer.")) return;
+  const { error } = await supa.from('opportunities').delete().eq('id', id);
+  if(error){ toast("Error: "+error.message); return; }
+  toast("✓ Eliminada");
+  closeModal();
+  await loadAll();
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function closeModal(){ document.getElementById('ov').classList.remove('on'); }
+
+let tt;
+function toast(m){
+  const t = document.getElementById('toast');
+  t.textContent = m;
+  t.classList.add('on');
+  clearTimeout(tt);
+  tt = setTimeout(()=>t.classList.remove('on'), 2200);
+}
+
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// ============================================================
+// ARRANQUE
+// ============================================================
+checkAuth();
+
+// Listener cambios de auth (login/logout)
+supa.auth.onAuthStateChange((event, session)=>{
+  if(event==='SIGNED_IN'||event==='SIGNED_OUT'){
+    setTimeout(checkAuth, 100);
+  }
+});
+</script>
+</body>
+</html>
